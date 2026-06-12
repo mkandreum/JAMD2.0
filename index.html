@@ -545,7 +545,7 @@
     /* ═══════════════════════════════════════════════════════════════
        PROJECTS CAROUSEL
        ═══════════════════════════════════════════════════════════════ */
-    .projects-carousel-wrap { position: relative; }
+    .projects-carousel-wrap { position: relative; padding: 0 var(--space-6); }
     .projects-carousel {
       display: flex; gap: var(--space-5);
       overflow-x: auto; scroll-snap-type: x mandatory;
@@ -1664,7 +1664,7 @@
           </div>
         </div>`;
 
-      slide.addEventListener('click', () => { if (hasDemoLink) window.open(linkUrl, '_blank', 'noopener,noreferrer'); });
+      slide.addEventListener('click', (e) => { if (hasDemoLink && !e.target.closest('.card-demo-btn')) window.open(linkUrl, '_blank', 'noopener,noreferrer'); });
       return slide;
     }
 
