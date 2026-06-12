@@ -10,8 +10,10 @@ const ADMIN_PASS = process.env.ADMIN_PASS || 'admin123';
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'projects.json');
 const SMTP_FILE = path.join(DATA_DIR, 'smtp.json');
+const SCREENSHOTS_DIR = path.join(DATA_DIR, 'screenshots');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(SCREENSHOTS_DIR)) fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
 if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, '[]', 'utf-8');
 if (!fs.existsSync(SMTP_FILE)) {
   fs.writeFileSync(SMTP_FILE, JSON.stringify({ host: 'smtp.gmail.com', port: 587, user: '', pass: '', to: '' }, null, 2), 'utf-8');
@@ -274,6 +276,45 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ success: false, message: e.message }));
       }
     });
+    return;
+  }
+
+  // API: Upload screenshot
+  if (pathname === '/api/upload' && req.method === 'POST') {
+    if (!checkAuth(req.headers)) {
+      res.writeHead(401); res.end(JSON.stringify({ success: false }));
+      return;
+    }
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { filename, data } = JSON.parse(body);
+        if (!filename || !data) throw new Error('Missing filename or data');
+        const ext = path.extname(filename) || '.png';
+        const uniqueName = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + ext;
+        const filePath = path.join(SCREENSHOTS_DIR, uniqueName);
+        const base64Data = data.includes(',') ? data.split(',')[1] : data;
+        fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, url: '/screenshots/' + uniqueName }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: e.message }));
+      }
+    });
+    return;
+  }
+
+  // Serve screenshots
+  if (pathname.startsWith('/screenshots/')) {
+    const fileName = path.basename(pathname);
+    const filePath = path.join(SCREENSHOTS_DIR, fileName);
+    if (!filePath.startsWith(SCREENSHOTS_DIR)) {
+      res.writeHead(403); res.end('Forbidden');
+      return;
+    }
+    serveFile(res, filePath);
     return;
   }
 

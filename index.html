@@ -1509,6 +1509,19 @@
       return res.json();
     }
 
+    async function apiUpload(token, filename, base64Data) {
+      const res = await fetch(`${API_BASE}/api/upload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + token
+        },
+        body: JSON.stringify({ filename, data: base64Data })
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      return res.json();
+    }
+
     /* ═══════════════════════════════════════════════════════════════
        PROJECTS DATA
        ═══════════════════════════════════════════════════════════════ */
@@ -1649,7 +1662,7 @@
       slide.className = 'carousel-slide';
 
       const linkUrl = p.demoUrl || '';
-      const hasScreenshot = p.screenshot && p.screenshot.length > 100;
+      const hasScreenshot = !!p.screenshot;
       const hasDemoLink = !!p.demoUrl;
 
       slide.innerHTML = `
@@ -1683,7 +1696,7 @@
       card.setAttribute('data-index', i);
 
       const linkUrl = p.demoUrl || '';
-      const hasScreenshot = p.screenshot && p.screenshot.length > 100;
+      const hasScreenshot = !!p.screenshot;
       const hasDemoLink = !!p.demoUrl;
 
       card.innerHTML = `
@@ -2015,11 +2028,17 @@
           const file = e.target.files[0];
           if (!file) return;
           const reader = new FileReader();
-          reader.onload = function(ev) {
+          reader.onload = async function(ev) {
             const preview = document.getElementById(`ap_preview_${i}`);
             preview.src = ev.target.result;
             preview.classList.add('show');
-            projects[i].screenshot = ev.target.result;
+            // Upload to server
+            try {
+              const result = await apiUpload(adminToken, file.name, ev.target.result);
+              projects[i].screenshot = result.url;
+            } catch (err) {
+              projects[i].screenshot = ev.target.result;
+            }
           };
           reader.readAsDataURL(file);
         });
