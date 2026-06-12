@@ -1,7 +1,10 @@
 FROM node:20-alpine
 WORKDIR /app
 
-COPY server.js index.html package.json ./
+COPY package.json ./
+RUN npm install
+
+COPY server.js index.html ./
 RUN mkdir -p /app/data
 
 EXPOSE 3000

@@ -1,8 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const net = require('net');
-const tls = require('tls');
+const nodemailer = require('nodemailer');
 
 const PORT = process.env.PORT || 3000;
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';
@@ -57,85 +56,28 @@ function serveFile(res, filePath) {
   });
 }
 
-/* ── SMTP email sender (zero deps) ──────────────────────────── */
+/* ── SMTP email sender (via nodemailer) ──────────────────────── */
 function sendEmail(config, fromName, fromEmail, subject, message, replyTo) {
   const { host, port, user, pass, to } = config;
   const isSSL = port == 465;
 
-  return new Promise((resolve, reject) => {
-    let step = 0, buffer = '', activeSocket, upgraded = false, ehloLines = [];
-
-    function send(d) { activeSocket.write(d + '\r\n'); }
-
-    function handleLine(line) {
-      try {
-        if (line.length < 4) return;
-        const code = parseInt(line.substring(0, 3));
-        const isLast = line[3] === ' ';
-        if (code >= 400) { reject(new Error(`SMTP ${code}: ${line}`)); return; }
-
-        if (step === 1 && !isLast) { ehloLines.push(line); return; }
-        if (step === 1 && isLast) {
-          ehloLines.push(line);
-          if (!upgraded && !isSSL && ehloLines.some(l => /STARTTLS/i.test(l))) {
-            buffer = ''; send('STARTTLS'); step = 2; ehloLines = [];
-            return;
-          }
-          send('AUTH LOGIN'); step = 3; ehloLines = []; return;
-        }
-
-        switch (step) {
-          case 0: send('EHLO localhost'); step = 1; break;
-          case 2:
-            activeSocket = tls.connect({ socket: activeSocket, rejectUnauthorized: false }, () => {
-              upgraded = true; buffer = ''; ehloLines = []; send('EHLO localhost'); step = 1;
-            });
-            activeSocket.on('data', onData);
-            activeSocket.on('error', reject);
-            break;
-          case 3: send(Buffer.from(user).toString('base64')); step = 4; break;
-          case 4: send(Buffer.from(pass).toString('base64')); step = 5; break;
-          case 5: send(`MAIL FROM:<${user}>`); step = 6; break;
-          case 6: send(`RCPT TO:<${to}>`); step = 7; break;
-          case 7: send('DATA'); step = 8; break;
-          case 8:
-            const headers = [
-              `From: "${fromName}" <${fromEmail}>`,
-              `To: <${to}>`,
-              `Subject: ${subject}`,
-            ];
-            if (replyTo) headers.push(`Reply-To: <${replyTo}>`);
-            headers.push(
-              'MIME-Version: 1.0',
-              'Content-Type: text/plain; charset=UTF-8',
-              'Content-Transfer-Encoding: 7bit',
-              '',
-              message,
-              '.'
-            );
-            send(headers.join('\r\n'));
-            step = 9; break;
-          case 9: send('QUIT'); setTimeout(resolve, 500); break;
-        }
-      } catch (e) { reject(e); }
-    }
-
-    function onData(data) {
-      buffer += data.toString();
-      const lines = buffer.split('\r\n');
-      buffer = lines.pop() || '';
-      for (const l of lines) handleLine(l);
-    }
-
-    if (isSSL) {
-      activeSocket = tls.connect(port, host, { rejectUnauthorized: false }, () => handleLine('220 '));
-    } else {
-      activeSocket = net.connect(port, host);
-    }
-    activeSocket.on('data', onData);
-    activeSocket.on('error', reject);
-    activeSocket.setTimeout(15000, () => { reject(new Error('SMTP timeout')); activeSocket.destroy(); });
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure: isSSL,
+    auth: { user, pass },
+    tls: { rejectUnauthorized: false }
   });
+
+  const mailOptions = {
+    from: `"${fromName}" <${fromEmail}>`,
+    to,
+    subject,
+    text: message,
+  };
+  if (replyTo) mailOptions.replyTo = replyTo;
+
+  return transporter.sendMail(mailOptions);
 }
 
 /* ── HTTP server ────────────────────────────────────────────── */

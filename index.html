@@ -1743,10 +1743,17 @@
     function renderProjects() {
       carousel.innerHTML = '';
       grid.innerHTML = '';
-      const sorted = [...projects].sort((a, b) => a.name.localeCompare(b.name));
-      let featuredCount = 0;
-      sorted.forEach((p, i) => {
-        if (p.featured) { carousel.appendChild(buildSlide(p, i)); featuredCount++; }
+      const featured = projects.filter(p => p.featured);
+      // Shuffle featured for carousel so different projects get visibility each load
+      for (let i = featured.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [featured[i], featured[j]] = [featured[j], featured[i]];
+      }
+      let featuredCount = featured.length;
+      featured.forEach((p) => {
+        carousel.appendChild(buildSlide(p, projects.indexOf(p)));
+      });
+      projects.forEach((p, i) => {
         grid.appendChild(buildCard(p, i));
       });
       if (featuredCount === 0) {
@@ -1780,6 +1787,9 @@
       toggleBtn.textContent = gridVisible ? 'Ver menos proyectos' : 'Ver más proyectos';
     });
 
+    // Save and restore scroll position on reload
+    window.addEventListener('beforeunload', () => sessionStorage.setItem('xyon-scroll', window.scrollY));
+
     // Initial load
     (async () => {
       projects = await loadProjects();
@@ -1787,6 +1797,11 @@
       setTimeout(() => {
         document.documentElement.classList.add('page-loaded');
         initCounters();
+        const savedScroll = sessionStorage.getItem('xyon-scroll');
+        if (savedScroll) {
+          sessionStorage.removeItem('xyon-scroll');
+          window.scrollTo(0, parseInt(savedScroll));
+        }
       }, 200);
     })();
 
