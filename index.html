@@ -551,6 +551,7 @@
       overflow-x: auto; scroll-snap-type: x mandatory;
       scrollbar-width: none; -ms-overflow-style: none;
       padding-bottom: var(--space-4);
+      -webkit-overflow-scrolling: touch;
     }
     .projects-carousel::-webkit-scrollbar { display: none; }
     .carousel-slide {
@@ -1045,6 +1046,7 @@
       .carousel-slide { flex: 0 0 85vw; }
       .carousel-skel { flex: 0 0 85vw; }
       .carousel-btn { display: none; }
+      .projects-carousel { gap: var(--space-3); }
     }
     @media (max-width: 480px) {
       .hero h1 { font-size: 2.4rem; }
@@ -1065,6 +1067,8 @@
       .float-nav .float-theme { width: 26px; height: 26px; font-size: 0.8rem; }
       .back-to-top { width: 36px; height: 36px; bottom: var(--space-4); right: var(--space-4); }
       .back-to-top svg { width: 14px; height: 14px; }
+      .carousel-slide .card-screen { height: 160px; }
+      .carousel-slide .card-body { padding: var(--space-3); }
     }
   </style>
 
