@@ -1787,9 +1787,6 @@
       toggleBtn.textContent = gridVisible ? 'Ver menos proyectos' : 'Ver más proyectos';
     });
 
-    // Save and restore scroll position on reload
-    window.addEventListener('beforeunload', () => sessionStorage.setItem('xyon-scroll', window.scrollY));
-
     // Initial load
     (async () => {
       projects = await loadProjects();
@@ -1797,11 +1794,6 @@
       setTimeout(() => {
         document.documentElement.classList.add('page-loaded');
         initCounters();
-        const savedScroll = sessionStorage.getItem('xyon-scroll');
-        if (savedScroll) {
-          sessionStorage.removeItem('xyon-scroll');
-          window.scrollTo(0, parseInt(savedScroll));
-        }
       }, 200);
     })();
 
