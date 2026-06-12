@@ -82,31 +82,61 @@ function sendEmail(config, subject, message) {
 function autoReplyHtml(name) {
   return `<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#0b0b14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0b14;padding:40px 20px">
-    <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#12121f,#1a1a2e);border-radius:20px;border:1px solid rgba(255,255,255,0.08);overflow:hidden">
-        <tr><td style="padding:40px 40px 0" align="center">
-          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px">
-            <span style="font-size:28px;font-weight:800;color:#fff;font-family:Arial,sans-serif">X</span>
-          </div>
-          <h1 style="margin:0 0 8px;font-size:26px;font-weight:700;color:#f1f5f9;letter-spacing:-0.5px">¡Gracias por escribirnos, ${name}!</h1>
-          <p style="margin:0 0 24px;font-size:15px;color:#94a3b8;line-height:1.6">Hemos recibido tu mensaje y nuestro equipo lo revisará a la brevedad.</p>
-        </td></tr>
-        <tr><td style="padding:0 40px">
-          <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid rgba(255,255,255,0.06)">
-            <p style="margin:0 0 12px;font-size:13px;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:600">Resumen de tu mensaje</p>
-            <p style="margin:0;font-size:15px;color:#cbd5e1;line-height:1.6"><em>«Nos pondremos en contacto contigo en las próximas horas para hablar de tu proyecto.»</em></p>
-          </div>
-        </td></tr>
-        <tr><td style="padding:0 40px 40px" align="center">
-          <p style="margin:0 0 4px;font-size:14px;color:#475569;font-weight:600">XyonPlatforms</p>
-          <p style="margin:0;font-size:13px;color:#334155">Desarrollo tecnológico de JAMD Desarrollos IA</p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{margin:0;padding:0;background:#0b0b14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif}
+  @media only screen and (max-width:600px){
+    .wrapper{padding:20px 12px!important}
+    .card{padding:32px 20px!important;border-radius:16px!important}
+    .card-header{padding:0 0 20px!important}
+    .logo-box{width:48px!important;height:48px!important}
+    .logo-text{font-size:24px!important}
+    h1{font-size:22px!important}
+    .summary{padding:16px 20px!important}
+    .footer{padding:0!important}
+  }
+</style>
+</head>
+<body>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0b14">
+  <tr><td align="center" class="wrapper" style="padding:48px 24px">
+    <table width="600" cellpadding="0" cellspacing="0" class="card" style="width:100%;max-width:600px;background:linear-gradient(160deg,#12121f 0%,#1a1a2e 100%);border-radius:24px;border:1px solid rgba(255,255,255,0.06);overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5)">
+      <tr><td class="card-header" style="padding:48px 48px 0" align="center">
+        <table cellpadding="0" cellspacing="0"><tr><td align="center">
+          <table cellpadding="0" cellspacing="0"><tr>
+            <td style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#6366f1 0%,#a855f7 50%,#ec4899 100%);display:inline-block;vertical-align:middle" align="center" valign="middle">
+              <span class="logo-text" style="display:block;font-size:28px;font-weight:800;color:#fff;line-height:56px;font-family:Arial,Helvetica,sans-serif">X</span>
+            </td>
+            <td style="padding-left:14px;vertical-align:middle">
+              <p style="margin:0;font-size:20px;font-weight:700;color:#f1f5f9;letter-spacing:-0.3px;line-height:1.2">XyonPlatforms</p>
+              <p style="margin:0;font-size:12px;color:#64748b;letter-spacing:0.5px;font-weight:500">JAMD Desarrollos IA</p>
+            </td>
+          </tr></table>
+          <div style="width:48px;height:2px;background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:1px;margin:24px auto 0"></div>
+        </td></tr></table>
+      </td></tr>
+      <tr><td style="padding:32px 48px" align="center">
+        <h1 style="margin:0;font-size:28px;font-weight:700;color:#f1f5f9;letter-spacing:-0.5px;line-height:1.3">¡Gracias por escribirnos,<br>${name}!</h1>
+        <p style="margin:16px 0 0;font-size:15px;color:#94a3b8;line-height:1.7">Hemos recibido tu mensaje correctamente. Nuestro equipo lo revisará y te responderemos a la mayor brevedad posible.</p>
+      </td></tr>
+      <tr><td style="padding:0 48px">
+        <table width="100%" cellpadding="0" cellspacing="0" class="summary" style="background:rgba(255,255,255,0.03);border-radius:14px;padding:24px;border:1px solid rgba(255,255,255,0.06)">
+          <tr><td align="center">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.5" style="display:block;margin:0 auto 12px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            <p style="margin:0;font-size:14px;color:#cbd5e1;line-height:1.7;font-style:italic">«Nos pondremos en contacto contigo en las próximas horas para hablar de tu proyecto.»</p>
+          </td></tr>
+        </table>
+      </td></tr>
+      <tr><td class="footer" style="padding:32px 48px 40px" align="center">
+        <div style="width:48px;height:2px;background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:1px;margin:0 auto 20px"></div>
+        <p style="margin:0;font-size:13px;color:#334155;font-weight:600">XyonPlatforms · Desarrollo tecnológico de JAMD Desarrollos IA</p>
+        <p style="margin:8px 0 0;font-size:12px;color:#1e293b">Este mensaje fue generado automáticamente. No respondas a este correo.</p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
 </body>
 </html>`;
 }
