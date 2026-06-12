@@ -152,7 +152,7 @@
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-full);
       box-shadow: var(--shadow-lg);
-      transition: all var(--transition);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
       will-change: transform;
     }
     .float-nav a, .float-nav button {
@@ -160,7 +160,7 @@
       color: var(--text-muted);
       padding: var(--space-2) var(--space-3);
       border-radius: var(--radius-full);
-      transition: all var(--transition);
+      transition: color 0.25s, background 0.25s;
       white-space: nowrap;
     }
     .float-nav a:hover, .float-nav button:hover {
@@ -269,7 +269,7 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: #fff; border-radius: var(--radius-full);
       font-weight: 700; font-size: var(--text-base);
-      transition: all 0.3s var(--ease-out-expo);
+      transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s;
       box-shadow: 0 4px 24px var(--accent-glow);
       border: none; position: relative; overflow: hidden;
     }
@@ -413,7 +413,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-2xl);
       overflow: hidden;
-      transition: all 0.5s var(--ease-out-expo);
+      transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo), border-color 0.4s;
       cursor: pointer;
       backdrop-filter: blur(8px);
       transform-style: preserve-3d;
@@ -582,7 +582,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-2xl);
-      transition: all 0.4s var(--ease-out-expo);
+      transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s, border-color 0.3s;
       position: relative; overflow: hidden;
     }
     .service-card::before {
@@ -731,6 +731,7 @@
     .reveal {
       opacity: 0; transform: translateY(40px);
       transition: opacity 0.8s ease, transform 0.8s var(--ease-out-expo);
+      will-change: opacity, transform;
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
     .reveal-d1 { transition-delay: 0.1s; }
@@ -913,6 +914,7 @@
     .hero-fade {
       opacity: 0; transform: translateY(20px);
       transition: opacity 0.8s ease, transform 0.8s var(--ease-out-expo);
+      will-change: opacity, transform;
     }
     .hero-fade.d1 { transition-delay: 0.1s; }
     .hero-fade.d2 { transition-delay: 0.2s; }
@@ -929,25 +931,26 @@
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 4px 20px var(--accent-glow);
       cursor: pointer; opacity: 0; transform: translateY(20px);
-      transition: all 0.4s var(--ease-out-expo);
+      transition: opacity 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo), box-shadow 0.3s;
       pointer-events: none;
+      will-change: opacity, transform;
     }
     .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .back-to-top:hover { transform: translateY(-4px); box-shadow: 0 8px 32px var(--accent-glow); }
 
     .float-nav a.active-section { color: var(--accent) !important; background: var(--accent-subtle) !important; }
 
-    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
     .skeleton-card {
       height: 400px; border-radius: var(--radius-2xl);
       background: var(--surface); border: 1px solid var(--border);
-      overflow: hidden;
+      overflow: hidden; position: relative;
     }
     .skeleton-shimmer {
-      height: 100%; width: 100%;
-      background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 50%, var(--surface) 75%);
-      background-size: 200% 100%;
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 25%, var(--surface-hover) 50%, transparent 75%);
       animation: shimmer 1.5s ease-in-out infinite;
+      will-change: transform;
     }
 
     .card-status::before {
@@ -975,7 +978,9 @@
     }
     @media (max-width: 768px) {
       .section { padding-inline: var(--space-5); }
-      .float-nav { gap: var(--space-1); padding: var(--space-1); top: var(--space-3); }
+      .float-nav { gap: var(--space-1); padding: var(--space-1); top: var(--space-3); backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .project-card { backdrop-filter: none; }
+      .cta-card { backdrop-filter: none; }
       .float-nav a, .float-nav button { font-size: 0.6rem; padding: var(--space-1) var(--space-2); }
       .float-nav .float-logo { font-size: 0.65rem; padding: var(--space-1) var(--space-3); margin: 0; }
       .float-nav .float-logo .logo-mark { width: 22px; height: 22px; }
