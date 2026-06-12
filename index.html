@@ -1743,8 +1743,9 @@
     function renderProjects() {
       carousel.innerHTML = '';
       grid.innerHTML = '';
+      const sorted = [...projects].sort((a, b) => a.name.localeCompare(b.name));
       let featuredCount = 0;
-      projects.forEach((p, i) => {
+      sorted.forEach((p, i) => {
         if (p.featured) { carousel.appendChild(buildSlide(p, i)); featuredCount++; }
         grid.appendChild(buildCard(p, i));
       });
