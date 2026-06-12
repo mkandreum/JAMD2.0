@@ -58,7 +58,7 @@ function serveFile(res, filePath) {
 }
 
 /* ── SMTP email sender (zero deps) ──────────────────────────── */
-function sendEmail(config, fromName, fromEmail, subject, message) {
+function sendEmail(config, fromName, fromEmail, subject, message, replyTo) {
   const { host, port, user, pass, to } = config;
   const isSSL = port == 465;
 
@@ -99,17 +99,21 @@ function sendEmail(config, fromName, fromEmail, subject, message) {
           case 6: send(`RCPT TO:<${to}>`); step = 7; break;
           case 7: send('DATA'); step = 8; break;
           case 8:
-            send([
+            const headers = [
               `From: "${fromName}" <${fromEmail}>`,
               `To: <${to}>`,
               `Subject: ${subject}`,
+            ];
+            if (replyTo) headers.push(`Reply-To: <${replyTo}>`);
+            headers.push(
               'MIME-Version: 1.0',
               'Content-Type: text/plain; charset=UTF-8',
               'Content-Transfer-Encoding: 7bit',
               '',
               message,
-              '.',
-            ].join('\r\n'));
+              '.'
+            );
+            send(headers.join('\r\n'));
             step = 9; break;
           case 9: send('QUIT'); setTimeout(resolve, 500); break;
         }
@@ -268,7 +272,7 @@ const server = http.createServer((req, res) => {
         }
         const subject = `Nuevo contacto de ${name} - XyonPlatforms`;
         const bodyText = `Nombre: ${name}\nEmail: ${email}\nTeléfono: ${phone || 'No especificado'}\n\nMensaje:\n${message}`;
-        await sendEmail(smtpData, name, email, subject, bodyText);
+        await sendEmail(smtpData, name, smtpData.user, subject, bodyText, email);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, message: 'Mensaje enviado correctamente' }));
       } catch (e) {
