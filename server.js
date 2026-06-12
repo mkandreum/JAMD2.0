@@ -79,6 +79,38 @@ function sendEmail(config, subject, message) {
   });
 }
 
+function autoReplyHtml(name) {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0b0b14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0b14;padding:40px 20px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#12121f,#1a1a2e);border-radius:20px;border:1px solid rgba(255,255,255,0.08);overflow:hidden">
+        <tr><td style="padding:40px 40px 0" align="center">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px">
+            <span style="font-size:28px;font-weight:800;color:#fff;font-family:Arial,sans-serif">X</span>
+          </div>
+          <h1 style="margin:0 0 8px;font-size:26px;font-weight:700;color:#f1f5f9;letter-spacing:-0.5px">¡Gracias por escribirnos, ${name}!</h1>
+          <p style="margin:0 0 24px;font-size:15px;color:#94a3b8;line-height:1.6">Hemos recibido tu mensaje y nuestro equipo lo revisará a la brevedad.</p>
+        </td></tr>
+        <tr><td style="padding:0 40px">
+          <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid rgba(255,255,255,0.06)">
+            <p style="margin:0 0 12px;font-size:13px;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:600">Resumen de tu mensaje</p>
+            <p style="margin:0;font-size:15px;color:#cbd5e1;line-height:1.6"><em>«Nos pondremos en contacto contigo en las próximas horas para hablar de tu proyecto.»</em></p>
+          </div>
+        </td></tr>
+        <tr><td style="padding:0 40px 40px" align="center">
+          <p style="margin:0 0 4px;font-size:14px;color:#475569;font-weight:600">XyonPlatforms</p>
+          <p style="margin:0;font-size:13px;color:#334155">Desarrollo tecnológico de JAMD Desarrollos IA</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
 /* ── HTTP server ────────────────────────────────────────────── */
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -214,6 +246,9 @@ const server = http.createServer((req, res) => {
         const subject = `Nuevo contacto de ${name} - XyonPlatforms`;
         const bodyText = `Nombre: ${name}\nEmail: ${email}\nTeléfono: ${phone || 'No especificado'}\n\nMensaje:\n${message}`;
         await sendEmail(smtpData, subject, bodyText);
+        // Auto-reply to visitor
+        const autoSubject = `Gracias por contactarnos, ${name} - XyonPlatforms`;
+        await sendEmail({ ...smtpData, to: email }, autoSubject, autoReplyHtml(name));
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, message: 'Mensaje enviado correctamente' }));
       } catch (e) {
