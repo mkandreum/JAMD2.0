@@ -57,7 +57,7 @@ function serveFile(res, filePath) {
 }
 
 /* ── SMTP email sender (via nodemailer) ──────────────────────── */
-function sendEmail(config, fromName, fromEmail, subject, message, replyTo) {
+function sendEmail(config, subject, message) {
   const { host, port, user, pass, to } = config;
   const isSSL = port == 465;
 
@@ -70,12 +70,11 @@ function sendEmail(config, fromName, fromEmail, subject, message, replyTo) {
   });
 
   const mailOptions = {
-    from: `"${fromName}" <${fromEmail}>`,
+    from: user,
     to,
     subject,
     text: message,
   };
-  if (replyTo) mailOptions.replyTo = replyTo;
 
   return transporter.sendMail(mailOptions);
 }
@@ -214,7 +213,7 @@ const server = http.createServer((req, res) => {
         }
         const subject = `Nuevo contacto de ${name} - XyonPlatforms`;
         const bodyText = `Nombre: ${name}\nEmail: ${email}\nTeléfono: ${phone || 'No especificado'}\n\nMensaje:\n${message}`;
-        await sendEmail(smtpData, name, smtpData.user, subject, bodyText, email);
+        await sendEmail(smtpData, subject, bodyText);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, message: 'Mensaje enviado correctamente' }));
       } catch (e) {
