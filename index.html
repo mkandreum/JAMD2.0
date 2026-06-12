@@ -542,6 +542,57 @@
       content: ''; position: absolute; top: 0; bottom: 0; width: 120px;
       z-index: 2; pointer-events: none;
     }
+    /* ═══════════════════════════════════════════════════════════════
+       PROJECTS CAROUSEL
+       ═══════════════════════════════════════════════════════════════ */
+    .projects-carousel-wrap { position: relative; }
+    .projects-carousel {
+      display: flex; gap: var(--space-5);
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      scrollbar-width: none; -ms-overflow-style: none;
+      padding-bottom: var(--space-4);
+    }
+    .projects-carousel::-webkit-scrollbar { display: none; }
+    .carousel-slide {
+      flex: 0 0 360px; max-width: 85vw;
+      scroll-snap-align: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      perspective: 800px;
+      will-change: transform;
+    }
+    .carousel-slide:hover {
+      transform: translateY(-4px) scale(1.01);
+      border-color: var(--accent-glow);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    }
+    .carousel-slide .card-screen { height: 200px; }
+    .carousel-slide .card-body { padding: var(--space-4); }
+    .carousel-slide .card-name { font-size: var(--text-base); }
+    .carousel-slide .card-desc { font-size: var(--text-xs); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .carousel-skel { flex: 0 0 360px; max-width: 85vw; height: 320px; scroll-snap-align: start; }
+    .carousel-btn {
+      position: absolute; top: 40%; z-index: 5;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transition: background 0.2s, transform 0.2s;
+      will-change: transform;
+    }
+    .carousel-btn:hover { background: var(--surface-hover); transform: scale(1.1); }
+    .carousel-btn:active { transform: scale(0.95); }
+    .carousel-prev { left: -16px; }
+    .carousel-next { right: -16px; }
+
     .marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
     .marquee-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
     .marquee-track {
@@ -991,6 +1042,9 @@
       .admin-project-fields { grid-template-columns: 1fr; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
       .hero { padding-top: 6rem; }
+      .carousel-slide { flex: 0 0 85vw; }
+      .carousel-skel { flex: 0 0 85vw; }
+      .carousel-btn { display: none; }
     }
     @media (max-width: 480px) {
       .hero h1 { font-size: 2.4rem; }
@@ -1095,9 +1149,26 @@
         <div class="section-header reveal">
           <p class="section-label">Portafolio</p>
           <h2 class="section-title" id="proyectos-title">Proyectos <span class="gradient-text">destacados</span></h2>
-          <p class="section-sub">Cada producto resuelve un problema real. Pasa el ratón sobre cada tarjeta para ver el efecto 3D.</p>
+          <p class="section-sub">Cada producto resuelve un problema real. Desliza para ver todos los proyectos destacados.</p>
         </div>
-        <div class="projects-grid" id="projectsGrid">
+        <div class="projects-carousel-wrap" id="projectsCarouselWrap">
+          <div class="projects-carousel" id="projectsCarousel">
+            <div class="skeleton-card carousel-skel"><div class="skeleton-shimmer"></div></div>
+            <div class="skeleton-card carousel-skel"><div class="skeleton-shimmer"></div></div>
+            <div class="skeleton-card carousel-skel"><div class="skeleton-shimmer"></div></div>
+            <div class="skeleton-card carousel-skel"><div class="skeleton-shimmer"></div></div>
+          </div>
+          <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Anterior">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Siguiente">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div style="text-align:center;margin-top:var(--space-6)">
+          <button class="btn-primary" id="toggleProjectsBtn" style="font-size:var(--text-sm)">Ver más proyectos</button>
+        </div>
+        <div class="projects-grid" id="projectsGrid" style="display:none;margin-top:var(--space-6)">
           <div class="skeleton-card"><div class="skeleton-shimmer"></div></div>
           <div class="skeleton-card"><div class="skeleton-shimmer"></div></div>
           <div class="skeleton-card"><div class="skeleton-shimmer"></div></div>
@@ -1560,71 +1631,124 @@
 
     /* ── RENDER PROJECTS ────────────────────────────────────────── */
     const grid = document.getElementById('projectsGrid');
+    const carousel = document.getElementById('projectsCarousel');
+    const toggleBtn = document.getElementById('toggleProjectsBtn');
+    let gridVisible = false;
+
+    function buildSlide(p, i) {
+      const slide = document.createElement('div');
+      slide.className = 'carousel-slide';
+
+      const linkUrl = p.demoUrl || '';
+      const hasScreenshot = p.screenshot && p.screenshot.length > 100;
+      const hasDemoLink = !!p.demoUrl;
+
+      slide.innerHTML = `
+        <div class="card-inner">
+          <div class="card-screen">
+            ${hasScreenshot
+              ? `<img src="${p.screenshot}" alt="Captura de ${p.name}" loading="lazy">`
+              : mockUI(p)}
+            <span class="card-lang">${p.lang}</span>
+            ${p.status ? `<span class="card-status" style="--status-color:${STATUS_CFG[p.status]?.color || '#888'}">${STATUS_CFG[p.status]?.label || p.status}</span>` : ''}
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <h3 class="card-name">${p.name}</h3>
+              ${hasDemoLink ? `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer" class="card-demo-btn" aria-label="Ver web real de ${p.name}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                Ver web real
+              </a>` : ''}
+            </div>
+            <p class="card-desc">${p.desc}</p>
+          </div>
+        </div>`;
+
+      slide.addEventListener('click', () => { if (hasDemoLink) window.open(linkUrl, '_blank', 'noopener,noreferrer'); });
+      return slide;
+    }
+
+    function buildCard(p, i) {
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      card.setAttribute('data-index', i);
+
+      const linkUrl = p.demoUrl || '';
+      const hasScreenshot = p.screenshot && p.screenshot.length > 100;
+      const hasDemoLink = !!p.demoUrl;
+
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-screen">
+            ${hasScreenshot
+              ? `<img src="${p.screenshot}" alt="Captura de ${p.name}" loading="lazy">`
+              : mockUI(p)}
+            <span class="card-lang">${p.lang}</span>
+            ${p.status ? `<span class="card-status" style="--status-color:${STATUS_CFG[p.status]?.color || '#888'}">${STATUS_CFG[p.status]?.label || p.status}</span>` : ''}
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <h3 class="card-name">${p.name}</h3>
+              ${hasDemoLink ? `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer" class="card-demo-btn" aria-label="Ver web real de ${p.name}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                Ver web real
+              </a>` : ''}
+            </div>
+            <p class="card-desc">${p.desc}</p>
+            <div class="card-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          </div>
+          <div class="card-hover-shine"></div>
+        </div>`;
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-6px)`;
+        const inner = card.querySelector('.card-inner');
+        if (inner) inner.style.transform = `rotateY(${x * 3}deg) rotateX(${-y * 3}deg)`;
+        const shine = card.querySelector('.card-hover-shine');
+        if (shine) { shine.style.setProperty('--mx', (e.clientX - rect.left) + 'px'); shine.style.setProperty('--my', (e.clientY - rect.top) + 'px'); }
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        const inner = card.querySelector('.card-inner');
+        if (inner) inner.style.transform = '';
+      });
+      card.addEventListener('click', (e) => {
+        if (!e.target.closest('.card-demo-btn') && hasDemoLink) { window.open(linkUrl, '_blank', 'noopener,noreferrer'); }
+      });
+      return card;
+    }
 
     function renderProjects() {
+      carousel.innerHTML = '';
       grid.innerHTML = '';
       projects.forEach((p, i) => {
-        const card = document.createElement('div');
-        card.className = 'project-card';
-        card.setAttribute('data-index', i);
-
-        const linkUrl = p.demoUrl || '';
-        const hasScreenshot = p.screenshot && p.screenshot.length > 100;
-        const hasDemoLink = !!p.demoUrl;
-
-        card.innerHTML = `
-          <div class="card-inner">
-            <div class="card-screen">
-              ${hasScreenshot
-                ? `<img src="${p.screenshot}" alt="Captura de ${p.name}" loading="lazy">`
-                : mockUI(p)}
-              <span class="card-lang">${p.lang}</span>
-              ${p.status ? `<span class="card-status" style="--status-color:${STATUS_CFG[p.status]?.color || '#888'}">${STATUS_CFG[p.status]?.label || p.status}</span>` : ''}
-            </div>
-            <div class="card-body">
-              <div class="card-top">
-                <h3 class="card-name">${p.name}</h3>
-                ${hasDemoLink ? `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer" class="card-demo-btn" aria-label="Ver web real de ${p.name}">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-                  Ver web real
-                </a>` : ''}
-              </div>
-              <p class="card-desc">${p.desc}</p>
-              <div class="card-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
-            </div>
-            <div class="card-hover-shine"></div>
-          </div>`;
-
-        // 3D tilt on mouse move
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = (e.clientX - rect.left) / rect.width - 0.5;
-          const y = (e.clientY - rect.top) / rect.height - 0.5;
-          card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-6px)`;
-          const inner = card.querySelector('.card-inner');
-          if (inner) inner.style.transform = `rotateY(${x * 3}deg) rotateX(${-y * 3}deg)`;
-          const shine = card.querySelector('.card-hover-shine');
-          if (shine) {
-            shine.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
-            shine.style.setProperty('--my', (e.clientY - rect.top) + 'px');
-          }
-        });
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = '';
-          const inner = card.querySelector('.card-inner');
-          if (inner) inner.style.transform = '';
-        });
-
-        // Click opens demo link if available
-        card.addEventListener('click', (e) => {
-          if (!e.target.closest('.card-demo-btn') && hasDemoLink) {
-            window.open(linkUrl, '_blank', 'noopener,noreferrer');
-          }
-        });
-
-        grid.appendChild(card);
+        carousel.appendChild(buildSlide(p, i));
+        grid.appendChild(buildCard(p, i));
       });
+      updateCarouselButtons();
     }
+
+    function updateCarouselButtons() {
+      prevBtn.style.display = carousel.scrollLeft > 0 ? '' : 'none';
+      nextBtn.style.display = carousel.scrollLeft < carousel.scrollWidth - carousel.clientWidth - 4 ? '' : 'none';
+    }
+
+    // Carousel navigation
+    const prevBtn = document.getElementById('carouselPrev');
+    const nextBtn = document.getElementById('carouselNext');
+    prevBtn.addEventListener('click', () => { carousel.scrollBy({ left: -380, behavior: 'smooth' }); });
+    nextBtn.addEventListener('click', () => { carousel.scrollBy({ left: 380, behavior: 'smooth' }); });
+    carousel.addEventListener('scroll', updateCarouselButtons);
+
+    // Toggle projects grid
+    toggleBtn.addEventListener('click', () => {
+      gridVisible = !gridVisible;
+      grid.style.display = gridVisible ? '' : 'none';
+      toggleBtn.textContent = gridVisible ? 'Ver menos proyectos' : 'Ver más proyectos';
+    });
 
     // Initial load
     (async () => {
