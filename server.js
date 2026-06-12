@@ -56,7 +56,7 @@ function serveFile(res, filePath) {
   });
 }
 
-/* ── SMTP email sender (via nodemailer) ──────────────────────── */
+/* ── SMTP email sender (via nodemailer, same as NixxyToxic) ── */
 function sendEmail(config, subject, message) {
   const { host, port, user, pass, to } = config;
   const isSSL = port == 465;
@@ -69,14 +69,14 @@ function sendEmail(config, subject, message) {
     tls: { rejectUnauthorized: false }
   });
 
-  const mailOptions = {
-    from: user,
+  const fromAddress = user.includes('@') ? user : 'noreply@xyonplatforms.com';
+
+  return transporter.sendMail({
+    from: `"XyonPlatforms" <${fromAddress}>`,
     to,
     subject,
-    text: message,
-  };
-
-  return transporter.sendMail(mailOptions);
+    html: message.replace(/\n/g, '<br>')
+  });
 }
 
 /* ── HTTP server ────────────────────────────────────────────── */
