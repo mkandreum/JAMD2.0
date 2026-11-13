@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 
-COPY server.js index.html ./
+COPY server.js index.html gastroos.png ./
 RUN mkdir -p /app/data
 
 EXPOSE 3000
