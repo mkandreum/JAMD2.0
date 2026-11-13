@@ -316,29 +316,34 @@ footer a{text-underline-offset:4px}
 }
 @media (prefers-reduced-motion:reduce){.pl{animation:none}}
 
+/* ═════════ Cristal líquido ═════════ */
+.glass{background:rgba(11,20,55,.6);-webkit-backdrop-filter:blur(12px) saturate(1.6);backdrop-filter:blur(12px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(4,8,30,.4),0 16px 36px -12px rgba(4,8,30,.6)}
 .nav{pointer-events:none}
 .nav-logo{pointer-events:auto}
-.lbar{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:10px;
-  --tw:76px;--bar-h:64px;--spring:cubic-bezier(.34,1.56,.64,1);transition:opacity .22s}
-.lbar.form-hide{opacity:0;pointer-events:none}
-.lb-caps,.lb-act{background:rgba(8,13,22,.72);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
-  border:1px solid rgba(255,255,255,.22);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 .5px rgba(255,255,255,.08),0 20px 40px -18px rgba(0,0,0,.75)}
-.lb-caps{position:relative;display:flex;height:var(--bar-h);width:calc(3*var(--tw) + 10px);padding:4px;border-radius:99px}
-.lb-caps a{position:relative;z-index:1;width:var(--tw);height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#fff;text-decoration:none;
-  font-size:.68rem;font-weight:600;border-radius:99px;white-space:nowrap;transition:opacity .3s}
-.lb-caps svg,.lb-act svg{width:25px;height:25px;flex:none;transition:transform .5s var(--spring),color .25s}
-.lb-act svg{width:26px;height:26px}
-.lb-caps a span{font-size:.625rem;font-weight:600;line-height:1;color:rgba(255,255,255,.84);transition:opacity .2s,color .25s}
-.lb-caps a:hover svg{transform:scale(1.08)}
-.lb-caps a:active svg,.lb-act:active svg{transform:scale(.9)}
-.lbar.lens-on .lb-caps a.on svg,.lbar.lens-on .lb-caps a.on span{opacity:0}
-.lb-act{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;color:#fff;
-  transition:transform .47s var(--spring)}
-.lb-act:hover{transform:scale(1.06)}
-.lbar.contact .lb-act{color:var(--lima);border-color:rgba(200,240,60,.42);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(200,240,60,.32),0 0 22px -6px rgba(200,240,60,.4),0 20px 40px -18px rgba(0,0,0,.75)}
-
+.lbar{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:10px;
+  --tw:78px;--spring:cubic-bezier(.34,1.56,.64,1)}
+.lb-caps{position:relative;display:flex;height:64px;padding:6px;border-radius:99px}
+.lb-caps a{position:relative;z-index:1;width:var(--tw);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#fff;text-decoration:none;
+  font-size:.68rem;font-weight:600;border-radius:99px;overflow:hidden;white-space:nowrap;transition:width .56s var(--spring),opacity .3s}
+.lb-caps svg,.lb-act svg{width:22px;height:22px;flex:none;transition:transform .5s var(--spring)}
+.lb-caps a span{transition:opacity .25s,max-height .4s;max-height:1.2em}
+.lb-caps a.on svg{transform:scale(1.14)}
+.lb-caps a:active svg,.lb-act:active svg{transform:scale(.86)}
+.lb-lens{position:absolute;top:6px;left:6px;width:var(--tw);height:52px;border-radius:99px;background:rgba(255,255,255,.2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 0 0 1px rgba(255,255,255,.18);transform:translateX(calc(var(--i,0)*var(--tw)));
+  transition:transform .56s var(--spring),width .56s var(--spring)}
+.lb-act{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:rgba(200,240,60,.92);color:var(--noche);
+  -webkit-backdrop-filter:blur(12px) saturate(1.6);backdrop-filter:blur(12px) saturate(1.6);border:1px solid rgba(255,255,255,.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 0 0 1px rgba(4,8,30,.3),0 16px 36px -12px rgba(4,8,30,.6);transition:transform .47s var(--spring)}
+.lb-act:hover{transform:scale(1.08)}
+.lbar.fold{--tw:52px}
+.lbar.fold .lb-caps a:not(.on){width:0;opacity:0;pointer-events:none}
+.lbar.fold .lb-caps a span{opacity:0;max-height:0}
+.lbar.fold .lb-lens{transform:none}
+.lbar.fold .lb-act{transform:translateX(4px)}
+@media(max-width:400px){.lbar{--tw:68px}}
 
 .chip{background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(10px) saturate(1.7);backdrop-filter:blur(10px) saturate(1.7);border:1px solid rgba(255,255,255,.75);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 18px 40px -14px rgba(11,20,55,.5)}
@@ -353,16 +358,20 @@ footer{padding-bottom:7rem}
 @media(max-width:860px){.steps{bottom:6rem}.panel form{margin-top:-3.2rem}.panel .lead{position:relative;z-index:3;margin-bottom:4.5rem}}
 @media (prefers-reduced-motion:reduce){.lb-caps a,.lb-lens,.lb-act,.lb-caps svg{transition:none}}
 
-/* ═════════ Barra flotante de cristal: horizontal y centrada en todos los tamaños ═════════ */
+/* ═════════ Barra de cristal: vertical a la izquierda en escritorio, horizontal abajo en móvil ═════════ */
 @media(min-width:861px){
   :root{--pad:max(5vw,108px)}
-  .lbar{--tw:92px;--bar-h:68px}
-  .lb-act{width:68px;height:68px}
-  .hud{bottom:6.4rem}
-  footer{padding-bottom:8rem}
+  .lbar{left:20px;top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;--tw:62px}
+  .lb-caps{flex-direction:column;height:auto;width:64px}
+  .lb-caps a{width:52px;height:var(--tw);transition:height .56s var(--spring),opacity .3s}
+  .lb-lens{width:52px;height:var(--tw);transform:translateY(calc(var(--i,0)*var(--tw)))}
+  .lbar.fold{--tw:52px}
+  .lbar.fold .lb-caps a:not(.on){width:52px;height:0;opacity:0}
+  .lbar.fold .lb-act{transform:translateY(4px)}
+  .hud{bottom:1.6rem}
+  footer{padding-bottom:2.2rem}
   .panel{padding-bottom:clamp(5rem,14vh,9rem)}
 }
-@media(max-width:400px){.lbar{--tw:70px}}
 
 .tile .shot{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top;border-radius:12px;margin:.9rem 0 0}
 .btn-admin-gear{background:none;border:0;color:inherit;font-size:1.1rem;cursor:pointer;opacity:.6}
@@ -578,32 +587,33 @@ footer{padding-bottom:7rem}
     .admin-toast.show { opacity: 1; }
 @media(max-width:700px){.admin-project-fields{grid-template-columns:1fr}.admin-header{flex-direction:column;align-items:flex-start;gap:1rem}}
 
-/* ═════════ Lente de cristal: burbuja activa que amplía la pestaña y se arrastra ═════════ */
-.lb-lens{position:absolute;top:-6px;left:calc(5px + (var(--tw) - var(--bar-h) - 12px)/2);z-index:3;width:calc(var(--bar-h) + 12px);height:calc(var(--bar-h) + 12px);
-  display:flex;align-items:center;justify-content:center;border-radius:99px;pointer-events:none;overflow:hidden;
-  background:rgba(255,255,255,.05);
-  -webkit-backdrop-filter:blur(5px) saturate(1.75) brightness(1.35);backdrop-filter:blur(5px) saturate(1.75) brightness(1.35);
-  border:1px solid rgba(255,255,255,.32);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.92),inset 0 0 0 1px rgba(255,255,255,.12),inset 0 -16px 24px -18px rgba(255,255,255,.5),
-    0 10px 26px -10px rgba(0,0,0,.72);
-  transform:translateX(calc(var(--i,0) * var(--tw)));
-  transition:transform .58s var(--spring),opacity .25s}
-.lb-lens::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+/* ═════════ Lente lupa: al mantener pulsada la barra crece, amplía y se arrastra ═════════ */
+.lb-lens{top:7px;left:7px;pointer-events:none;z-index:2;overflow:hidden;
+  background:rgba(255,255,255,.2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 0 0 1px rgba(255,255,255,.18);
+  transition:transform .56s var(--spring),width .42s var(--spring),height .42s var(--spring),margin .42s var(--spring),background .2s,box-shadow .2s,opacity .2s}
+.lbar.held .lb-lens{background:rgba(11,20,55,.56);-webkit-backdrop-filter:blur(9px) saturate(1.35);backdrop-filter:blur(9px) saturate(1.35);
+  box-shadow:0 0 0 1px rgba(4,8,30,.35),0 16px 30px -10px rgba(4,8,30,.8);
+  transition:width .4s var(--spring),height .4s var(--spring),margin .4s var(--spring),background .2s,box-shadow .2s,opacity .2s}
+.lbar.held .lb-lens::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.45),inset 0 -12px 18px -14px rgba(255,255,255,.55)}
+.lbar.held .lb-lens::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
   background:
-    linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,.06) 28%,rgba(255,255,255,0) 52%),
-    radial-gradient(80% 62% at 50% 110%,rgba(255,255,255,.2),rgba(255,255,255,0) 64%)}
-.lb-lens::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
-  background:radial-gradient(120% 120% at 50% 45%,rgba(4,8,20,0) 60%,rgba(4,8,20,.26) 100%)}
-.lb-lens-in{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:translateZ(0)}
-.lb-lens-in svg{width:29px;height:29px;color:var(--lima);filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
-.lb-lens-in b{font-family:var(--ff-b);font-size:.7rem;font-weight:700;line-height:1;letter-spacing:-.01em;color:var(--lima)}
-.lbar:not(.lens-on) .lb-lens{opacity:0}
-.lbar.held .lb-lens{transition:none}
-.lbar.held .lb-lens-in{transform:scale(1.04)}
+    linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08) 24%,rgba(255,255,255,0) 46%),
+    radial-gradient(80% 58% at 50% 108%,rgba(255,255,255,.2),rgba(255,255,255,0) 62%),
+    radial-gradient(112% 112% at 50% 45%,rgba(4,8,30,0) 62%,rgba(4,8,30,.34) 100%);
+  opacity:.8}
+.lb-ghost{position:absolute;margin:0;display:flex;pointer-events:none;z-index:1;
+  background:transparent;border:0;box-shadow:none;will-change:transform}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .lbar.held .lb-ghost{background:rgba(11,20,55,.9)}
+}
 .lb-caps{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .lb-caps a{-webkit-user-drag:none}
-.lb-caps a:focus-visible{outline-offset:-2px}
-
+.lbar.held .lb-caps a svg{transition:transform .12s}
+.lb-act:active{transform:scale(1.16,.9)}
+.lbar.fold .lb-lens{opacity:0}
+.lb-lens{transition-property:transform,width,height,margin,opacity}
 </style>
 </head>
 <body>
@@ -612,19 +622,15 @@ footer{padding-bottom:7rem}
   <a class="nav-logo" id="floatLogo" href="#top">JAMD Desarrollos IA</a>
 </header>
 
-<!-- Barra flotante de cristal: lente activa que viaja entre Inicio, Proyectos y Servicios -->
+<!-- Barra de cristal líquido: cápsula con lente que viaja y plegado al bajar (inspirada en LiquidBar) -->
 <nav class="lbar" id="lbar" aria-label="Navegación principal">
-  <div class="lb-caps">
-    <a href="#top" data-s="scene"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2 2.6 10.1c-.4.3-.6.8-.6 1.3v8.1c0 .8.7 1.5 1.5 1.5h5.2c.4 0 .8-.3.8-.8v-5.4c0-.4.3-.8.8-.8h3.4c.4 0 .8.3.8.8v5.4c0 .4.3.8.8.8h5.2c.8 0 1.5-.7 1.5-1.5v-8.1c0-.5-.2-1-.6-1.3L12 2.2z"/></svg><span>Inicio</span></a>
-    <a href="#proyectos" data-s="proyectos"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><span>Proyectos</span></a>
-    <a href="#servicios" data-s="servicios"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.8l2.55 7.65L22.2 12l-7.65 2.55L12 22.2l-2.55-7.65L1.8 12l7.65-2.55L12 1.8z"/></svg><span>Servicios</span></a>
+  <div class="lb-caps glass">
+    <a href="#top" data-s="scene"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Inicio</span></a>
+    <a href="#nosotros" data-s="nosotros"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.900 1.900 6.500 5.500"/><path d="M16 4.800a3.500 3.500 0 010 6.400M18.500 14.800c1.700.8 2.700 2.500 3 5.200"/></svg><span>Nosotros</span></a>
+    <a href="#proyectos" data-s="proyectos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.500" height="7.500" rx="2"/><rect x="13.500" y="3" width="7.500" height="7.500" rx="2"/><rect x="3" y="13.500" width="7.500" height="7.500" rx="2"/><rect x="13.500" y="13.500" width="7.500" height="7.500" rx="2"/></svg><span>Proyectos</span></a>
+    <a href="#servicios" data-s="servicios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg><span>Servicios</span></a>
   </div>
-  <span class="lb-lens" aria-hidden="true">
-    <span class="lb-lens-in">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2 2.6 10.1c-.4.3-.6.8-.6 1.3v8.1c0 .8.7 1.5 1.5 1.5h5.2c.4 0 .8-.3.8-.8v-5.4c0-.4.3-.8.8-.8h3.4c.4 0 .8.3.8.8v5.4c0 .4.3.8.8.8h5.2c.8 0 1.5-.7 1.5-1.5v-8.1c0-.5-.2-1-.6-1.3L12 2.2z"/></svg>
-      <b>Inicio</b>
-    </span>
-  </span>
+  <span class="lb-lens" aria-hidden="true"></span>
   <a class="lb-act" href="#contacto" aria-label="Contacto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.500 7.500l8.500 6 8.500-6"/></svg></a>
 </nav>
 
@@ -1602,77 +1608,96 @@ footer{padding-bottom:7rem}
     nav.classList.toggle('inv', dark);
   }
 
-  /* barra de cristal: pestaña activa según la sección */
+  /* barra de cristal: pestaña activa según la sección y plegado al bajar */
   const lbar = $('#lbar'), tabs = $$('.lb-caps a'), secs = tabs.map(t => document.getElementById(t.dataset.s));
-  let tabI = -1, navLock = 0;
-  const capsule = $('.lb-caps'), lensIn = $('.lb-lens-in');
-  let hold = null, swallow = false;
-
-  function setLensContent(i) {
-    const t = tabs[i];
-    if (!t || !lensIn) return;
-    const svg = t.querySelector('svg').cloneNode(true);
-    const label = document.createElement('b');
-    label.textContent = t.querySelector('span').textContent;
-    lensIn.replaceChildren(svg, label);
-    if (lensIn.animate && !matchMedia('(prefers-reduced-motion:reduce)').matches) lensIn.animate([{ opacity: .35 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' });
-  }
-  function setActive(i) {
-    if (i < 0 || i >= tabs.length) return;
-    tabI = i;
-    tabs.forEach((t, n) => t.classList.toggle('on', n === i));
-    lbar.style.setProperty('--i', i);
-    setLensContent(i);
-  }
+  let tabI = -1;
   function bar(y, dy) {
-    const contact = document.getElementById('contacto');
-    lbar.classList.toggle('contact', !!contact && contact.getBoundingClientRect().top <= innerHeight * .5);
-    if (lbar.classList.contains('held') || Date.now() < navLock) return;
+    if (dy > 3 && y > 140) lbar.classList.add('fold');
+    else if (dy < -3 || y < 140) lbar.classList.remove('fold');
+    if (lbar.classList.contains('held')) return;
     let i = 0;
     secs.forEach((el, n) => { if (el.getBoundingClientRect().top <= innerHeight * .5) i = n; });
-    if (i !== tabI) setActive(i);
+    if (i !== tabI) { tabI = i; tabs.forEach((t, n) => t.classList.toggle('on', n === i)); lbar.style.setProperty('--i', i); }
   }
-  lbar.classList.add('lens-on');
   bar(scrollY, 0);
-  setLensContent(tabI < 0 ? 0 : tabI);
 
-  /* la lente sigue al puntero al mantener pulsada o arrastrar por la barra */
-  const tabSize = () => parseFloat(getComputedStyle(lbar).getPropertyValue('--tw')) || 76;
+  /* lente lupa: mantener pulsada (o arrastrar) la convierte en una lente que amplía la barra */
+  const capsule = $('.lb-caps'), lens = $('.lb-lens');
+  let hold = null, swallow = false, ghost = null, ghostTabs = [];
+  const vertical = () => matchMedia('(min-width:861px)').matches;
+  const tabSize = () => parseFloat(getComputedStyle(lbar).getPropertyValue('--tw')) || 62;
+  const LENS_ZOOM = 1.34;
+  function makeGhost() {
+    ghost = capsule.cloneNode(true);
+    ghost.className = 'lb-caps lb-ghost';
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.querySelectorAll('a').forEach(a => { a.tabIndex = -1; a.removeAttribute('href'); });
+    ghostTabs = [...ghost.children];
+    lens.appendChild(ghost);
+  }
+  function syncGhost() {
+    if (!ghost) return;
+    const L = lens.getBoundingClientRect(), C = capsule.getBoundingClientRect();
+    ghost.style.left = (C.left - L.left) + 'px';
+    ghost.style.top = (C.top - L.top) + 'px';
+    ghost.style.width = C.width + 'px';
+    ghost.style.height = C.height + 'px';
+    ghost.style.transformOrigin = `${L.left + L.width / 2 - C.left}px ${L.top + L.height / 2 - C.top}px`;
+    ghost.style.transform = `scale(${hold.zoom || LENS_ZOOM})`;
+  }
+  function ghostLoop() {
+    if (!hold || !hold.on || !ghost) return;
+    syncGhost();
+    hold.raf = requestAnimationFrame(ghostLoop);
+  }
   function holdMove(e) {
-    const r = capsule.getBoundingClientRect(), T = tabSize();
-    const f = clamp(((e.clientX - r.left) - 5 - T / 2) / T, 0, tabs.length - 1);
+    const r = capsule.getBoundingClientRect(), T = tabSize(), v = vertical();
+    const f = clamp(((v ? e.clientY - r.top : e.clientX - r.left) - 7 - T / 2) / T, 0, tabs.length - 1);
     hold.f = f; lbar.style.setProperty('--i', f.toFixed(3));
-    const near = Math.round(f);
-    if (near !== hold.near) {
-      hold.near = near;
-      tabs.forEach((t, n) => t.classList.toggle('on', n === near));
-      setLensContent(near);
-    }
+    tabs.forEach((t, n) => {
+      const on = Math.round(f) === n;
+      t.classList.toggle('on', on);
+      if (ghostTabs[n]) ghostTabs[n].classList.toggle('on', on);
+    });
   }
   function holdStart(e) {
     if (!hold || hold.on) return;
     hold.on = true;
     try { capsule.setPointerCapture(hold.id); } catch (_) {}
+    const v = vertical(), T = tabSize(), w0 = v ? 52 : T, h0 = v ? T : 52;
+    const zoom = v ? 1.2 : LENS_ZOOM, kw = v ? 1.5 : zoom;
+    const w = Math.round(w0 * kw), h = Math.round(h0 * zoom);
+    hold.zoom = zoom;
+    lens.style.width = w + 'px'; lens.style.height = h + 'px';
+    lens.style.margin = `${-(h - h0) / 2}px 0 0 ${-(w - w0) / 2}px`;
+    makeGhost();
     lbar.classList.add('held');
-    hold.near = tabI;
     holdMove(e);
+    syncGhost();
+    hold.raf = requestAnimationFrame(ghostLoop);
   }
   function holdEnd(e, go) {
     if (!hold) return;
     clearTimeout(hold.t);
     if (hold.on) {
-      const i = hold.near ?? tabI;
-      navLock = Date.now() + 1400;
+      const i = Math.round(hold.f);
+      if (hold.raf) cancelAnimationFrame(hold.raf);
+      lens.style.transition = 'none';
       lbar.classList.remove('held');
-      setActive(i);
+      lens.style.width = lens.style.height = lens.style.margin = '';
+      if (ghost) { ghost.remove(); ghost = null; ghostTabs = []; }
+      tabs.forEach((t, n) => t.classList.toggle('on', n === i));
+      void lens.offsetWidth;
+      lens.style.transition = '';
+      tabI = i; lbar.style.setProperty('--i', i);
       swallow = true; setTimeout(() => { swallow = false; }, 350);
       if (go) secs[i].scrollIntoView({ behavior: calm ? 'auto' : 'smooth' });
     }
     hold = null;
   }
   capsule.addEventListener('pointerdown', e => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    hold = { id: e.pointerId, x: e.clientX, y: e.clientY, on: false, f: tabI, near: tabI, t: setTimeout(() => holdStart(e), 170) };
+    if (lbar.classList.contains('fold') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    hold = { id: e.pointerId, x: e.clientX, y: e.clientY, on: false, f: tabI, t: setTimeout(() => holdStart(e), 170) };
   });
   capsule.addEventListener('pointermove', e => {
     if (!hold) return;
@@ -1693,22 +1718,11 @@ footer{padding-bottom:7rem}
   capsule.addEventListener('contextmenu', e => e.preventDefault());
   capsule.addEventListener('dragstart', e => e.preventDefault());
   capsule.addEventListener('click', e => { if (swallow) { e.preventDefault(); e.stopPropagation(); swallow = false; } }, true);
-  tabs.forEach((t, i) => t.addEventListener('click', () => {
-    if (lbar.classList.contains('held')) return;
-    navLock = Date.now() + 1400;
-    setActive(i);
-  }));
-
-  /* la barra se aparta mientras se escribe en el formulario */
-  addEventListener('focusin', e => {
-    if (e.target.closest && e.target.closest('#form')) lbar.classList.add('form-hide');
-  });
-  addEventListener('focusout', e => {
-    if (!(e.target.closest && e.target.closest('#form'))) return;
-    setTimeout(() => {
-      if (!document.activeElement || !document.activeElement.closest('#form')) lbar.classList.remove('form-hide');
-    }, 90);
-  });
+  $('.lb-caps').addEventListener('click', e => {
+    if (lbar.classList.contains('fold')) { e.preventDefault(); lbar.classList.remove('fold'); }
+  }, true);
+  lbar.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') lbar.classList.remove('fold'); });
+  lbar.addEventListener('focusin', () => lbar.classList.remove('fold'));
 
   (function loop() {
     const y = scrollY;
