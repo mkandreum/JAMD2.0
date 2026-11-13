@@ -5,6 +5,7 @@ COPY package.json ./
 RUN npm install
 
 COPY server.js index.html gastroos.png ./
+COPY liquidbar ./liquidbar
 RUN mkdir -p /app/data
 
 EXPOSE 3000
