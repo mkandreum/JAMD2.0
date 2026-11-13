@@ -1,5 +1,5 @@
 /*!
- * LiquidBar web — port 1:1 de la barra de cristal líquido de github.com/mkandreum/liquidbar
+ * LiquidBar web v1.0.1 — port 1:1 de la barra de cristal líquido de github.com/mkandreum/liquidbar
  * (Jetpack Compose) a JavaScript sin dependencias.
  *
  * Mismos valores que la versión nativa (LiquidBar.kt, glass/Touch.kt, LiquidMotion.kt, GlassSurface.kt):
@@ -1212,6 +1212,6 @@
     support,
     spring,
     springEasing,
-    version: '1.0.0',
+    version: '1.0.1',
   };
 });
