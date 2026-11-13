@@ -358,25 +358,20 @@ footer{padding-bottom:7rem}
 @media(max-width:860px){.steps{bottom:6rem}.panel form{margin-top:-3.2rem}.panel .lead{position:relative;z-index:3;margin-bottom:4.5rem}}
 @media (prefers-reduced-motion:reduce){.lb-caps a,.lb-lens,.lb-act,.lb-caps svg{transition:none}}
 
-/* ═════════ Barra de cristal en vertical, a la izquierda ═════════ */
-.lbar{left:20px;top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;--tw:62px}
-.lb-caps{flex-direction:column;height:auto;width:64px}
-.lb-caps a{width:52px;height:var(--tw);transition:height .56s var(--spring),opacity .3s}
-.lb-lens{width:52px;height:var(--tw);transform:translateY(calc(var(--i,0)*var(--tw)))}
-.lbar.fold{--tw:52px}
-.lbar.fold .lb-caps a:not(.on){width:52px;height:0;opacity:0}
-.lbar.fold .lb-act{transform:translateY(4px)}
-.hud{bottom:1.6rem}
-footer{padding-bottom:2.2rem}
-.panel{padding-bottom:clamp(5rem,14vh,9rem)}
-@media(min-width:861px){:root{--pad:max(5vw,108px)}}
-@media(max-width:860px){
-  .lbar{left:12px;top:auto;bottom:max(14px,env(safe-area-inset-bottom));transform:none}
-  .steps{left:auto;right:var(--pad);bottom:1.4rem}
-  .hud{left:5.6rem}
-  footer{padding-bottom:10.5rem}
+/* ═════════ Barra de cristal: vertical a la izquierda en escritorio, horizontal abajo en móvil ═════════ */
+@media(min-width:861px){
+  :root{--pad:max(5vw,108px)}
+  .lbar{left:20px;top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;--tw:62px}
+  .lb-caps{flex-direction:column;height:auto;width:64px}
+  .lb-caps a{width:52px;height:var(--tw);transition:height .56s var(--spring),opacity .3s}
+  .lb-lens{width:52px;height:var(--tw);transform:translateY(calc(var(--i,0)*var(--tw)))}
+  .lbar.fold{--tw:52px}
+  .lbar.fold .lb-caps a:not(.on){width:52px;height:0;opacity:0}
+  .lbar.fold .lb-act{transform:translateY(4px)}
+  .hud{bottom:1.6rem}
+  footer{padding-bottom:2.2rem}
+  .panel{padding-bottom:clamp(5rem,14vh,9rem)}
 }
-@media(max-width:400px){.lbar{--tw:58px}}
 
 .tile .shot{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top;border-radius:12px;margin:.9rem 0 0}
 .btn-admin-gear{background:none;border:0;color:inherit;font-size:1.1rem;cursor:pointer;opacity:.6}
@@ -1589,15 +1584,13 @@ footer{padding-bottom:2.2rem}
   const lbar = $('#lbar'), tabs = $$('.lb-caps a'), secs = tabs.map(t => document.getElementById(t.dataset.s));
   let tabI = -1;
   function bar(y, dy) {
-    if (innerWidth <= 860) { if (Math.abs(dy) > 3) lbar.classList.add('fold'); }
-    else if (dy > 3 && y > 140) lbar.classList.add('fold');
+    if (dy > 3 && y > 140) lbar.classList.add('fold');
     else if (dy < -3 || y < 140) lbar.classList.remove('fold');
     let i = 0;
     secs.forEach((el, n) => { if (el.getBoundingClientRect().top <= innerHeight * .5) i = n; });
     if (i !== tabI) { tabI = i; tabs.forEach((t, n) => t.classList.toggle('on', n === i)); lbar.style.setProperty('--i', i); }
   }
   bar(scrollY, 0);
-  if (innerWidth <= 860) lbar.classList.add('fold');
   $('.lb-caps').addEventListener('click', e => {
     if (lbar.classList.contains('fold')) { e.preventDefault(); lbar.classList.remove('fold'); }
   }, true);
