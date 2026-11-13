@@ -129,7 +129,9 @@
       });
     }
     frameHooks.forEach((h) => h(t));
-    if (running.size || waiters.length) rafId = requestAnimationFrame(tick);
+    // Lo que se anima durante el fotograma ya ha llamado a kick(): no programar un segundo callback,
+    // o cada fotograma duplicaría los siguientes (crecimiento exponencial al arrastrar la lente).
+    if ((running.size || waiters.length) && !rafId) rafId = requestAnimationFrame(tick);
   }
 
   /** Espera a un fotograma en que `test()` sea cierto (snapshotFlow { … }.first { it }). */
